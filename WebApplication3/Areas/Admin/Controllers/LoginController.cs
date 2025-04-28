@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Modelss;
+using System.Web.Security;
+using Models;
 using WebApplication3.Areas.Admin.Code;
 using WebApplication3.Areas.Admin.Models;
 
@@ -21,12 +22,9 @@ namespace WebApplication3.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Index(LoginModel model)
         {
-            var  result = new AccountModel().Login(model.UserName, model.Password);
-            if(result && ModelState.IsValid){
-                SessionHelper.SetSession(new UserSession()
-                {
-                    UserName = model.UserName,
-                });
+            //var  result = new AccountModel().Login(model.UserName, model.Password);
+            if(Membership.ValidateUser(model.UserName,model.Password) && ModelState.IsValid){
+                FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -34,6 +32,11 @@ namespace WebApplication3.Areas.Admin.Controllers
                 ModelState.AddModelError("", "Tên đăng nhập hoặc mật khẩu không đúng");
             }
             return View(model);
+        }
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return RedirectToAction("Index", "Login");
         }
     }
 }
