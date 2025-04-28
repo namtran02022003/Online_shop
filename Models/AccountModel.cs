@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Models.Framework;
 using System.Data.SqlClient;
-namespace Modelss
+namespace Models
 {
     public class AccountModel
     {
